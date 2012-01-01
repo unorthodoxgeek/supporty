@@ -2,14 +2,6 @@ require 'spec_helper'
 
 describe SupportController do
 
-  before :all do
-    @user = Factory.create(:user)
-  end
-
-	before :each do
-		sign_in @user
-	end
-
 	it "should show new" do
 		get :new
 		response.should be_success
