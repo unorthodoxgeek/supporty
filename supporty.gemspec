@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Tom Caspy"]
   s.email       = ["tom@orthodoxgeek.co.il"]
-  s.homepage    = "http://www.orthodoxgeek.co.il"
-  s.summary     = %q{File editor for locales for rails` I18N annoying yml way}
+  s.homepage    = "http://un.orthodoxgeek.co.il"
+  s.summary     = %q{Supporty is a ruby open source customer support framework}
   s.description = %q{Supporty is a ruby open source customer support framework}
 
   s.rubyforge_project = "cms"
