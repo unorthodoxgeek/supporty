@@ -16,6 +16,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "factory_girl"
+  s.add_development_dependency "spork"
   s.add_dependency "rails"
   
 end
