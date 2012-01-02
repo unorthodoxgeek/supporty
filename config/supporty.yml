@@ -1,0 +1,2 @@
+test:
+  success_redirect_path: "/"

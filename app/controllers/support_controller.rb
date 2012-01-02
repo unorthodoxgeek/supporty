@@ -1,22 +1,26 @@
 class SupportController < ApplicationController
 
+	def index
+		@title = t("supporty.titles.index")
+	end
+
 	def new
-		@title = t("new_support_ticket_title")
+		@title = t("supporty.titles.new_ticket")
 		@ticket = Support.new
 	end
 
 	def create
 		@ticket = Support.new(params[:support])
 		if @ticket.save
-			flash[:notice] = t(:support_ticket_created_notice)
-			redirect_to root_path
+			flash[:notice] = t("supporty.flashes.ticket_created")
+			redirect_to Support.config("success_redirect_path")
 		else
 			render "new"
 		end
 	end
 
 	def show
-		@title = t("show_support_ticket")
+		@title = t("supporty.titles.show_ticket")
 		@ticket = Support.find(params[:id])
 	end
 

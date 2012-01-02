@@ -8,6 +8,9 @@ describe SupportController do
 	end
 
 	it "should allow creation of new support tickets" do
+		@new_ticket = Support.new(email: "john@doe.com", name: "John Doe", support: "bla bla bla")
+		Support.should_receive(:new).and_return @new_ticket
+		@new_ticket.should_receive(:save).and_return(true)
 		post :create, support: { email: "john@doe.com", name: "John Doe", support: "bla bla bla" }
 		response.should be_redirect
 		response.should redirect_to root_path
