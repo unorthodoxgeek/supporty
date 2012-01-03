@@ -3,6 +3,7 @@ PATH
   specs:
     supporty (0.0.1)
       rails
+      rakismet
 
 GEM
   remote: http://rubygems.org/
@@ -81,6 +82,7 @@ GEM
       rdoc (~> 3.4)
       thor (~> 0.14.6)
     rake (0.9.2.2)
+    rakismet (1.1.2)
     rdoc (3.12)
       json (~> 1.4)
     rspec (2.7.0)

@@ -1,4 +1,12 @@
 class Support < ActiveRecord::Base
+
+	after_create :send_emails
+
+
+	def send_emails
+		SupportMailer.confirm_email(self).deliver
+	end
+
 	cattr_accessor :configuration
 	class << self
 

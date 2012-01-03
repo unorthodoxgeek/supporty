@@ -22,5 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mysql2"
   s.add_development_dependency "faker"
   s.add_dependency "rails"
+  s.add_dependency "rakismet"
   
 end
