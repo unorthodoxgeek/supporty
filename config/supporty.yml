@@ -1,2 +1,4 @@
 test:
   success_redirect_path: "/"
+  user_method: "current_user"
+  admin_method: "admin?"

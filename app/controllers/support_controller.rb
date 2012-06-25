@@ -1,5 +1,7 @@
 class SupportController < ApplicationController
 
+	include SupportsHelper
+
 	def index
 		@title = t("supporty.titles.index")
 	end
@@ -7,6 +9,7 @@ class SupportController < ApplicationController
 	def new
 		@title = t("supporty.titles.new_ticket")
 		@ticket = Support.new
+		support_user
 	end
 
 	def create
@@ -22,6 +25,11 @@ class SupportController < ApplicationController
 	def show
 		@title = t("supporty.titles.show_ticket")
 		@ticket = Support.find(params[:id])
+	end
+
+	def check_helper
+		support_user
+		render :nothing => true
 	end
 
 end

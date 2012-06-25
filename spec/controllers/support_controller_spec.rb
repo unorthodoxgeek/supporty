@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SupportController do
 
 	it "should show new" do
+		controller.stub!(:current_user).and_return(nil)
 		get :new
 		response.should be_success
 	end
@@ -22,6 +23,12 @@ describe SupportController do
 		Support.stub!(:find).with("1").and_return(@ticket)
 		get :show, :id => @ticket.id
 		assigns[:ticket].should == @ticket
+	end
+
+	it "should be able to use methods defined in support helper" do
+		controller.stub!(:current_user).and_return(1)
+		get :new
+		response.should be_success
 	end
 
 end
