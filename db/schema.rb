@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120101065422) do
+ActiveRecord::Schema.define(:version => 20120625113755) do
+
+  create_table "support_messages", :force => true do |t|
+    t.integer  "support_id"
+    t.text     "body"
+    t.string   "subject"
+    t.string   "from_email"
+    t.string   "from_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "supports", :force => true do |t|
     t.string   "reason"

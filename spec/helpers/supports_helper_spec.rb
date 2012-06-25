@@ -13,13 +13,13 @@ require 'spec_helper'
 describe SupportsHelper do
 
 	it "should call the corrent user method" do
-		ActionController.stub(:current_user).and_return(1)
+		helper.stub(:current_user).and_return(1)
 		helper.support_user.should == 1
 	end
 
 	it "should return admin correctly" do
 		current_user = Support.new
-		ActionController.stub!(:current_user).and_return(current_user)
+		helper.stub!(:current_user).and_return(current_user)
 		current_user.stub!(:admin?).and_return(true)
 		helper.support_admin?.should be_true
 	end
