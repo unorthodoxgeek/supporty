@@ -1,4 +1,4 @@
-class MailGateway
+class Support::MailGateway
 
   cattr_accessor :gateway
 
@@ -9,5 +9,6 @@ class MailGateway
       raise NotImplementedError
     end
   end
+
 
 end

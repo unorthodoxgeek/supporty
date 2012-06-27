@@ -1,5 +1,7 @@
 Supporty::Application.routes.draw do
-  resources :support
-
-  root :to => "support#index"
+  resources :support do
+    collection do
+      post :gateway
+    end
+  end
 end

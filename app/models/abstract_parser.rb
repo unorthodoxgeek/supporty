@@ -6,6 +6,12 @@
 
 class AbstractParser
 
+  #each parser can take in the handle! class method, which simply
+  #creates a new instance of parser using the params hash
+  def self.handle!(params = {})
+    self.new(params)
+  end
+
   def self.update_ticket(data = {})
 
     if data[:ticket_id].present? && (ticket = Support.find(data[:ticket_id])).present?
