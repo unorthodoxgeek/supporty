@@ -4,4 +4,6 @@ Supporty::Application.routes.draw do
       post :gateway
     end
   end
+
+  root :to => "support#index"
 end

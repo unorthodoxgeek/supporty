@@ -49,7 +49,7 @@ class Support::PostmarkParser < AbstractParser
   end
 
   def ticket_id
-    Support::PostmarkParser.get_email_hash_data(mailbox_hash)
+    Support::PostmarkParser.get_email_hash_data(mailbox_hash)[:ticket_id]
   end
 
 # custom methods
@@ -57,7 +57,7 @@ class Support::PostmarkParser < AbstractParser
   #This method assumes there's only a ticket id, but point is, we might
   #want to store more data in the future, so why not prepare for it?
   def self.get_email_hash_data(email_hash)
-    hashed_arr = email_hash.split("-")
+    hashed_arr = email_hash.to_s.split("-")
     {
       ticket_id: hashed_arr[0]
     }

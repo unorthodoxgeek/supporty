@@ -34,6 +34,7 @@ class SupportController < ApplicationController
 
   def gateway
     Support::MailGateway.gateway.handle!(params)
+    render nothing: true
   end
 
 end

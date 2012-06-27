@@ -13,7 +13,6 @@ class AbstractParser
   end
 
   def self.update_ticket(data = {})
-
     if data[:ticket_id].present? && (ticket = Support.find(data[:ticket_id])).present?
       data[:support_id] = ticket.id
       data.delete(:ticket_id)
