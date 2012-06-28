@@ -117,11 +117,15 @@ describe SupportController do
       assigns[:ticket].should == t
     end
 
-    it "should add reply a ticket" do
-      t=Factory.create(:ticket, :agent_id => @user.id)
+    it "should add reply a ticket, when reply is made, the ticket is assigned to the agent if not assigned" do
+      Support::Message.delete_all
+      t=Factory.create(:ticket)
       lambda {
         put :update, id: t.id, ticket: { body: Faker::Lorem.paragraph }
       }.should change(Support::Message, :count).by(1)
+      Support::Message.last.agent.should be_true
+      t.reload
+      t.agent_id.should == @user.id
     end
 
   end

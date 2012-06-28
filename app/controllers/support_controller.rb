@@ -38,7 +38,7 @@ class SupportController < ApplicationController
       response[:agent] = true
     end
 
-    @ticket.add_response!(response)
+    @ticket.add_response!(response, support_user)
     redirect_to action: :show, id: @ticket.id
   end
 

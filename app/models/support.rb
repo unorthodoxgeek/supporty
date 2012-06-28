@@ -65,8 +65,12 @@ class Support < ActiveRecord::Base
     SupportMailer.confirm_email(self).deliver
   end
 
-  def add_response!(data)
-    messages.create(data)
+  def add_response!(data, user = nil)
+    m=messages.create(data)
+    if m.agent? && self.agent_id.nil?
+      self.agent_id = user.try(:id)
+      save
+    end
   end
 
   def created_from_mail!
