@@ -1,9 +1,12 @@
 class SupportController < ApplicationController
 
+  before_filter :require_user, :only => [:index, :show]
+
   include SupportsHelper
 
   def index
     @title = t("supporty.titles.index")
+    populate_tickets
   end
 
   def new
@@ -14,6 +17,7 @@ class SupportController < ApplicationController
 
   def create
     @ticket = Support.new(params[:support])
+    @ticket.user_id = support_user.try(:id)
     if @ticket.save
       flash[:notice] = t("supporty.flashes.ticket_created")
       redirect_to Support.config("success_redirect_path")
@@ -25,16 +29,36 @@ class SupportController < ApplicationController
   def show
     @title = t("supporty.titles.show_ticket")
     @ticket = Support.find(params[:id])
-  end
-
-  def check_helper
-    support_user
-    render :nothing => true
+    if !support_agent? && @ticket.user_id != support_user.id
+      redirect_to action: :index
+    end
   end
 
   def gateway
     Support::MailGateway.gateway.handle!(params)
     render nothing: true
+  end
+
+  private
+
+  def populate_tickets
+    if support_agent?
+      populate_for_agent
+    else
+      populate_for_client
+    end
+  end
+
+  def populate_for_agent
+    @tickets = Support.open.where(["agent_id IS NULL OR agent_id = ?", support_user.id])
+  end
+
+  def populate_for_client
+    @tickets = Support.open.for_user(support_user.id)
+  end
+
+  def require_user
+    redirect_to :action => "new" and return if support_user.blank?
   end
 
 end

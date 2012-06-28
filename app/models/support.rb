@@ -17,6 +17,14 @@ class Support < ActiveRecord::Base
   cattr_accessor :configuration
   serialize :meta_fields, Hash
 
+#scopes
+  scope :open, where(status: "open")
+  scope :closed, where(status: "closed")
+  scope :assigned_to, lambda {|agent_id| where(agent_id: agent_id) }
+  scope :for_user, lambda {|user_id| where(user_id: user_id) }
+  scope :unassigned, where(agent_id: nil)
+  scope :rated, where("rating IS NOT NULL")
+
 #class_methods
 
   #this method is used to access the supporty configuration

@@ -8,6 +8,10 @@ class Support::Message < ActiveRecord::Base
 
 #attributes
 
+#scopes
+  scope :customer_reply, where(agent: false)
+  scope :agent_reply, where(agent: true)
+
 #class methods
 
 #instance methods

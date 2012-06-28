@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20120628075053) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "meta_fields"
-    t.string   "status"
+    t.string   "status",      :default => "open"
     t.integer  "agent_id"
     t.integer  "rating"
   end

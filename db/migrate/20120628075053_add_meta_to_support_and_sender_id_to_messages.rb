@@ -2,7 +2,7 @@ class AddMetaToSupportAndSenderIdToMessages < ActiveRecord::Migration
   def change
     #meta fields are meant to store customized data
     add_column :supports, :meta_fields, :text
-    add_column :supports, :status, :string
+    add_column :supports, :status, :string, :default => "open"
     add_column :supports, :agent_id, :integer
     add_column :supports, :rating, :integer
     add_column :support_messages, :agent, :boolean, :default => false

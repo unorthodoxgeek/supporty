@@ -1,9 +1,17 @@
 require 'spec_helper'
 
 describe SupportController do
-
-  it "should show new" do
+  before :each do
     controller.stub!(:current_user).and_return(nil)
+  end
+
+  it "should redirect to new when trying to view index not logged in" do
+    get :index
+    response.should be_redirect
+    response.should redirect_to new_support_path
+  end
+  
+  it "should show new" do
     get :new
     response.should be_success
   end
@@ -17,18 +25,84 @@ describe SupportController do
     response.should redirect_to root_path
   end
 
-  it "should allow viewing of support tickets" do
-    @ticket = Support.new
-    @ticket.stub!(:id).and_return(1)
-    Support.stub!(:find).with("1").and_return(@ticket)
-    get :show, :id => @ticket.id
-    assigns[:ticket].should == @ticket
-  end
-
   it "should be able to use methods defined in support helper" do
     controller.stub!(:current_user).and_return(1)
     get :new
     response.should be_success
+  end
+
+  it "should not allow not logged in user to view tickets" do
+    get :show, :id => 1
+    response.should be_redirect
+  end
+
+  describe "logged in as customer" do
+
+    before :each do
+      #we don't have a user model, but it doesn't really matter
+      @user = Support.new
+      @user.stub!(:id).and_return(1)
+      @user.stub(:admin?).and_return(false)
+      @user.stub(:agent?).and_return(false)
+      controller.stub!(:current_user).and_return(@user)
+    end
+
+    it "should return the user's open tickets when viewing index" do
+      t=Factory.create(:ticket, :user_id => @user.id)
+      get :index
+      assigns(:tickets).should == [t]
+    end
+
+    it "should not show the user's closed tickets" do
+      t=Factory.create(:ticket, :user_id => @user.id)
+      t2=Factory.create(:ticket, :user_id => @user.id, :status => "closed")
+      get :index
+      assigns(:tickets).should == [t]
+    end
+
+    it "should let the customer view his tickets" do
+      t=Factory.create(:ticket, :user_id => @user.id)
+      get :show, :id => t.id
+      response.should be_success
+      assigns[:ticket].should == t
+    end
+
+    it "should not let the customer view his tickets" do
+      t=Factory.create(:ticket, :user_id => @user.id+1)
+      get :show, :id => t.id
+      response.should be_redirect
+      response.should redirect_to support_index_path
+    end
+
+  end
+
+  describe "logged in agent" do
+    before :each do
+      #we don't have a user model, but it doesn't really matter
+      @user = Support.new
+      @user.stub!(:id).and_return(1)
+      @user.stub(:admin?).and_return(false)
+      @user.stub(:agent?).and_return(true)
+      controller.stub!(:current_user).and_return(@user)
+    end
+
+    it "should show the agent all the open tickets not assigned to others" do
+      Support.delete_all
+      t=Factory.create(:ticket)
+      t1=Factory.create(:ticket, :agent_id => @user.id+1)
+      t0 = Factory.create(:ticket, :agent_id => @user.id)
+      t2=Factory.create(:ticket, :status => "closed")
+      get :index
+      assigns(:tickets).should == [t0, t]
+    end
+
+    it "should allow agent to view tickets" do
+      t=Factory.create(:ticket)
+      get :show, :id => t.id
+      response.should be_success
+      assigns[:ticket].should == t
+    end
+
   end
 
   describe "incoming emails gateway" do
