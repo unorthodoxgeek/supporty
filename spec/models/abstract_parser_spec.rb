@@ -19,6 +19,14 @@ describe AbstractParser do
         }.should change(Support, :count).by(1)
     end
 
+    it "should create a new ticket from a new support email, even when too short a body" do
+      params = @params
+      params[:body] = "short"
+      lambda {
+        AbstractParser.update_ticket(params)
+        }.should change(Support, :count).by(1)
+    end
+
     it "should update an existing ticket from a reply email" do
       ticket = Factory.create(:ticket)
       params = @params.merge({ticket_id: ticket.id})

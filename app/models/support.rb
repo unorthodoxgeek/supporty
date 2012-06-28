@@ -11,10 +11,11 @@ class Support < ActiveRecord::Base
   validates :email, format: {
     with: /(\A[^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i,
     on: :create }
-  validates :support, length: { :minimum => 10 }
+  validates :support, length: { :minimum => 10 }, :unless => :created_from_mail?
 
 #attributes
   cattr_accessor :configuration
+  serialize :meta_fields, Hash
 
 #class_methods
 
@@ -47,6 +48,7 @@ class Support < ActiveRecord::Base
     }
 
     ticket = Support.new(params)
+    ticket.created_from_mail!
     ticket.save!
   end
 
@@ -57,6 +59,14 @@ class Support < ActiveRecord::Base
 
   def add_response!(data)
     messages.create(data)
+  end
+
+  def created_from_mail!
+    @created_from_mail = true
+  end
+
+  def created_from_mail?
+    return @created_from_mail
   end
 
 end

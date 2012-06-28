@@ -37,8 +37,10 @@ ActiveRecord::Schema.define(:version => 20120628075053) do
     t.text     "meta_fields"
     t.string   "status"
     t.integer  "agent_id"
+    t.integer  "rating"
   end
 
+  add_index "supports", ["agent_id", "rating"], :name => "index_supports_on_agent_id_and_rating"
   add_index "supports", ["status", "agent_id"], :name => "index_supports_on_status_and_agent_id"
 
 end
