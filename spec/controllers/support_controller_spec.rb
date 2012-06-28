@@ -69,9 +69,23 @@ describe SupportController do
 
     it "should not let the customer view his tickets" do
       t=Factory.create(:ticket, :user_id => @user.id+1)
-      get :show, :id => t.id
+      get :show, id: t.id
       response.should be_redirect
       response.should redirect_to support_index_path
+    end
+
+    it "should add reply to his own ticket" do
+      t=Factory.create(:ticket, :user_id => @user.id)
+      lambda {
+        put :update, id: t.id, ticket: { body: Faker::Lorem.paragraph }
+      }.should change(Support::Message, :count).by(1)
+    end
+
+    it "should not add reply to unrelated tickets" do
+      t=Factory.create(:ticket, :user_id => @user.id+1)
+      lambda {
+        put :update, id: t.id, ticket: { body: Faker::Lorem.paragraph }
+      }.should_not change(Support::Message, :count)
     end
 
   end
@@ -101,6 +115,13 @@ describe SupportController do
       get :show, :id => t.id
       response.should be_success
       assigns[:ticket].should == t
+    end
+
+    it "should add reply a ticket" do
+      t=Factory.create(:ticket, :agent_id => @user.id)
+      lambda {
+        put :update, id: t.id, ticket: { body: Faker::Lorem.paragraph }
+      }.should change(Support::Message, :count).by(1)
     end
 
   end

@@ -1,6 +1,7 @@
 class SupportController < ApplicationController
 
   before_filter :require_user, :only => [:index, :show]
+  before_filter :get_ticket, :only => [:show, :update]
 
   include SupportsHelper
 
@@ -15,6 +16,10 @@ class SupportController < ApplicationController
     support_user
   end
 
+  def show
+    @title = t("supporty.titles.show_ticket")
+  end
+
   def create
     @ticket = Support.new(params[:support])
     @ticket.user_id = support_user.try(:id)
@@ -26,12 +31,15 @@ class SupportController < ApplicationController
     end
   end
 
-  def show
-    @title = t("supporty.titles.show_ticket")
-    @ticket = Support.find(params[:id])
-    if !support_agent? && @ticket.user_id != support_user.id
-      redirect_to action: :index
+  def update
+    response = params[:ticket]
+
+    if support_agent?
+      response[:agent] = true
     end
+
+    @ticket.add_response!(response)
+    redirect_to action: :show, id: @ticket.id
   end
 
   def gateway
@@ -59,6 +67,13 @@ class SupportController < ApplicationController
 
   def require_user
     redirect_to :action => "new" and return if support_user.blank?
+  end
+
+  def get_ticket
+    @ticket = Support.find(params[:id])
+    if !support_agent? && @ticket.user_id != support_user.id
+      redirect_to action: :index
+    end
   end
 
 end
