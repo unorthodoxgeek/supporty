@@ -7,4 +7,8 @@ FactoryGirl.define do
     email { Faker::Internet.email }
     support { Faker::Lorem.paragraph }
   end
+
+  factory :ticket_message, :class => Support::Message do
+    body { Faker::Lorem.paragraph }
+  end
 end

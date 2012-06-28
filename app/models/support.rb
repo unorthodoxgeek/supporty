@@ -1,7 +1,7 @@
 class Support < ActiveRecord::Base
 
 #associations
-  has_many :messages, class_name: "Support::Message"
+  has_many :messages, class_name: "Support::Message", :order => "id DESC"
 
 #callbacks
   after_create :send_emails
