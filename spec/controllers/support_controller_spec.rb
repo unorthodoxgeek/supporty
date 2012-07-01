@@ -60,7 +60,7 @@ describe SupportController do
       assigns(:tickets).should == [t]
     end
 
-    it "should let the customer view his tickets" do
+    it "should let the customer view his tickets, but not see agent data" do
       t=Factory.create(:ticket, :user_id => @user.id)
       get :show, :id => t.id
       response.should be_success
@@ -126,6 +126,19 @@ describe SupportController do
       Support::Message.last.agent.should be_true
       t.reload
       t.agent_id.should == @user.id
+    end
+
+    describe "support#show specifics" do
+      before :all do
+        @ticket = Factory.create(:ticket)
+      end
+
+      it "should allow setting of meta fields" do
+        put :update, id: @ticket.id, support: { meta_fields: { something: "whatever" } }
+        @ticket.reload
+        @ticket.meta_fields["something"].should == "whatever"
+      end
+
     end
 
   end

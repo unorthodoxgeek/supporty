@@ -35,10 +35,12 @@ class SupportController < ApplicationController
     response = params[:ticket]
 
     if support_agent?
-      response[:agent] = true
+      response[:agent] = true if response.present?
+
+      @ticket.update_attributes(params[:support])
     end
 
-    @ticket.add_response!(response, support_user)
+    @ticket.add_response!(response, support_user) if response.present?
     redirect_to action: :show, id: @ticket.id
   end
 
