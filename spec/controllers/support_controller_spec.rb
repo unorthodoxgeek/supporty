@@ -1,5 +1,13 @@
 require 'spec_helper'
 
+def log_in_agent
+  @user = Support.new
+  @user.stub!(:id).and_return(1)
+  @user.stub(:admin?).and_return(false)
+  @user.stub(:agent?).and_return(true)
+  controller.stub!(:current_user).and_return(@user)
+end
+
 describe SupportController do
   before :each do
     controller.stub!(:current_user).and_return(nil)
@@ -93,11 +101,7 @@ describe SupportController do
   describe "logged in agent" do
     before :each do
       #we don't have a user model, but it doesn't really matter
-      @user = Support.new
-      @user.stub!(:id).and_return(1)
-      @user.stub(:admin?).and_return(false)
-      @user.stub(:agent?).and_return(true)
-      controller.stub!(:current_user).and_return(@user)
+      log_in_agent
     end
 
     it "should show the agent all the open tickets not assigned to others" do
@@ -128,7 +132,8 @@ describe SupportController do
       t.agent_id.should == @user.id
     end
 
-    describe "support#show specifics" do
+    describe "support#update specifics" do
+
       before :all do
         @ticket = Factory.create(:ticket)
       end
@@ -137,6 +142,36 @@ describe SupportController do
         put :update, id: @ticket.id, support: { meta_fields: { something: "whatever" } }
         @ticket.reload
         @ticket.meta_fields["something"].should == "whatever"
+      end
+
+    end
+
+    describe "support #index filters" do
+
+      before :each do
+        log_in_agent
+        Support.delete_all
+      end
+
+      it "should allow agent to filter tickets by agent id" do
+        @ticket = Factory.create(:ticket, :agent_id => 1)
+        @ticket2 = Factory.create(:ticket, :agent_id => 2)
+        get :index, filter: { agent_id: 2 }
+        assigns[:tickets].should == [@ticket2]
+      end
+
+      it "should filter tickets by status" do
+        @ticket = Factory.create(:ticket, :status => "open")
+        @ticket2 = Factory.create(:ticket, :status => "escalated")
+        get :index, filter: { status: "escalated" }
+        assigns[:tickets].should == [@ticket2]
+      end
+
+      it "should filter tickets by email" do
+        @ticket = Factory.create(:ticket, :email => "john@doe.com")
+        @ticket2 = Factory.create(:ticket, :email => "johnny@cache.com")
+        get :index, filter: { email: "johnny@cache.com" }
+        assigns[:tickets].should == [@ticket2]
       end
 
     end

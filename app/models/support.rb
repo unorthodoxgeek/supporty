@@ -21,6 +21,7 @@ class Support < ActiveRecord::Base
   scope :open, where(status: "open")
   scope :closed, where(status: "closed")
   scope :assigned_to, lambda {|agent_id| where(agent_id: agent_id) }
+  scope :assigned_to_or_unasigned, lambda {|agent_id| where(["agent_id IS NULL OR agent_id = ?", agent_id])}
   scope :for_user, lambda {|user_id| where(user_id: user_id) }
   scope :unassigned, where(agent_id: nil)
   scope :rated, where("rating IS NOT NULL")

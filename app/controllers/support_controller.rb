@@ -60,7 +60,17 @@ class SupportController < ApplicationController
   end
 
   def populate_for_agent
-    @tickets = Support.open.where(["agent_id IS NULL OR agent_id = ?", support_user.id])
+    filter = params[:filter]
+    @tickets = Support
+    
+    if filter.blank?
+      @tickets = @tickets.open.assigned_to_or_unasigned(support_user.id)
+    else
+      filter.each do |key, value|
+        @tickets = @tickets.where(key => value)
+      end
+    end
+
   end
 
   def populate_for_client
